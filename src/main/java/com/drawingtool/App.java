@@ -17,9 +17,18 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 1280, 720);
+        scene = new Scene(loadFXML("MainWindow"), 1280, 720);
         stage.setScene(scene);
         stage.setTitle("Drawing Tool");
+        stage.show();
+    }
+
+    public static void startSeparateWindow(String fxml, String title) throws IOException {
+        Stage stage = new Stage();
+        scene = new Scene(loadFXML(fxml));
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.setResizable(false);
         stage.show();
     }
 

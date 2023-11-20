@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 
-public class PrimaryController implements Initializable {
+public class MainController implements Initializable {
     @FXML
     private ColorPicker colorpicker;
     @FXML
@@ -44,8 +44,8 @@ public class PrimaryController implements Initializable {
     }
 
     @FXML
-    public void newCanvas(ActionEvent e) {
-        
+    public void newCanvas(ActionEvent e) throws IOException {
+        App.startSeparateWindow("NewCanvas", "Create New Canvas");
     }
 
     @FXML
