@@ -45,14 +45,7 @@ public class PrimaryController implements Initializable {
 
     @FXML
     public void newCanvas(ActionEvent e) {
-        TextField getCanvasWidth = new TextField();
-        getCanvasWidth.setPromptText("Width");
-        getCanvasWidth.setPrefWidth(500);
-        getCanvasWidth.setAlignment(Pos.CENTER);
-        TextField getCanvasHeight = new TextField();
-        getCanvasHeight.setPromptText("Height");
-        getCanvasHeight.setPrefWidth(500);
-        getCanvasHeight.setAlignment(Pos.CENTER);
+        
     }
 
     @FXML
