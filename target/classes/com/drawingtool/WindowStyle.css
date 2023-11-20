@@ -1,0 +1,15 @@
+.pane {
+    -fx-background-color:#1E1E1E;
+}
+
+.hbox {
+    -fx-background-color:#3C3C3C;
+}
+
+.vbox {
+    -fx-background-color:#333333;
+}
+
+.canvas {
+    color:white;
+}
