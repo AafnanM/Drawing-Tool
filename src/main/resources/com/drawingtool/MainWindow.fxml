@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ColorPicker?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@WindowStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.drawingtool.MainController">
    <children>
@@ -24,10 +26,44 @@
          <children>
             <Button fx:id="brush" mnemonicParsing="false" onAction="#brushSelected" text="Brush" />
             <ColorPicker fx:id="colorpicker" />
-            <TextField fx:id="bsize" />
+            <TextField fx:id="bsize" promptText="Type brush size" text="25" />
          </children>
       </VBox>
-      <Rectangle fill="WHITE" height="640.0" layoutX="20.0" layoutY="60.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1040.0" />
-      <Canvas fx:id="canvas" height="640.0" layoutX="20.0" layoutY="60.0" width="1040.0" />
+      <AnchorPane fx:id="canvasPane" layoutX="20.0" layoutY="60.0" prefHeight="640.0" prefWidth="1040.0">
+         <children>
+            <Rectangle fx:id="canvasBG" fill="WHITE" height="640.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1040.0" />
+            <Canvas fx:id="canvas" height="640.0" width="1040.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="newCanvasPane" disable="true" layoutX="160.0" layoutY="130.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="760.0" styleClass="vbox" stylesheets="@WindowStyle.css" visible="false">
+         <children>
+            <AnchorPane layoutX="8.0" layoutY="8.0" prefHeight="484.0" prefWidth="744.0" styleClass="hbox">
+               <children>
+                  <TextField fx:id="canvasWidth" layoutX="190.0" layoutY="144.0" prefHeight="31.0" prefWidth="124.0" text="500" />
+                  <TextField fx:id="canvasHeight" layoutX="190.0" layoutY="194.0" prefHeight="31.0" prefWidth="124.0" text="500" />
+                  <ColorPicker fx:id="canvasColorpicker" layoutX="190.0" layoutY="244.0" prefHeight="31.0" prefWidth="124.0" />
+                  <Text fill="WHITE" layoutX="123.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Width:" />
+                  <Text fill="WHITE" layoutX="121.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Height:" />
+                  <Text fill="WHITE" layoutX="90.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paper color:" />
+                  <AnchorPane fx:id="canvasPreviewPane" layoutX="446.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Rectangle fx:id="canvasPreview" fill="WHITE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                     </children>
+                  </AnchorPane>
+                  <VBox alignment="TOP_CENTER" layoutX="67.0" layoutY="308.0" prefHeight="133.0" prefWidth="271.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#createNewCanvas" prefHeight="38.0" prefWidth="116.0" text="Create Canvas" />
+                        <Text fx:id="canvasErrorMsg" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Please set a valid width and height." visible="false">
+                           <VBox.margin>
+                              <Insets top="15.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <Button layoutX="668.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancelNewCanvas" prefHeight="38.0" prefWidth="67.0" text="Cancel" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
