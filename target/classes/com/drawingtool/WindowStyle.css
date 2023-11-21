@@ -13,3 +13,7 @@
 .canvas {
     color:white;
 }
+
+.colorpicker {
+    -fx-color-label-visible: false
+}
