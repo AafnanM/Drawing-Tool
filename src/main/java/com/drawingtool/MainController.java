@@ -76,7 +76,7 @@ public class MainController extends App implements Initializable {
     @FXML
     private AnchorPane newCanvasPane;
     
-    GraphicsContext brushTool;
+    GraphicsContext gc;
 
     private String selectedTool = "";
     private int selectedBrush = 1;
@@ -86,7 +86,7 @@ public class MainController extends App implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        brushTool = canvas.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
 
         //  Brush tool
         canvas.setOnMouseDragged(e -> {
@@ -94,14 +94,14 @@ public class MainController extends App implements Initializable {
             double x = e.getX() - size/2;
             double y = e.getY() - size/2;
 
-            draw(brushTool, size, x, y);
+            draw(gc, size, x, y);
         });
         canvas.setOnMouseClicked(e -> {
             double size = Double.parseDouble(bsize.getText());
             double x = e.getX() - size/2;
             double y = e.getY() - size/2;
 
-            draw(brushTool, size, x, y);
+            draw(gc, size, x, y);
         });
 
         //  Rotate canvas
@@ -179,18 +179,18 @@ public class MainController extends App implements Initializable {
     }
 
     //  DRAWING CODE
-    private void draw(GraphicsContext brushTool, double size, double x, double y) {
+    private void draw(GraphicsContext gc, double size, double x, double y) {
         if ((selectedTool == "brush" || selectedTool == "eraser") && !bsize.getText().isEmpty()) {
             //  Set fill
             if (selectedTool == "brush")
-                brushTool.setFill(colorpickerPrimary.getValue());
+                gc.setFill(colorpickerPrimary.getValue());
             else if (selectedTool == "eraser")
-                brushTool.setFill(canvasColorpicker.getValue());
+                gc.setFill(canvasColorpicker.getValue());
             //  Set brush shape
             if (selectedBrush == 1)
-                brushTool.fillRoundRect(x, y, size, size, size, size);
+                gc.fillRoundRect(x, y, size, size, size, size);
             else if (selectedBrush == 2)
-                brushTool.fillRoundRect(x, y, size, size, 1, 1);
+                gc.fillRoundRect(x, y, size, size, 1, 1);
         }
     }
 
@@ -255,12 +255,13 @@ public class MainController extends App implements Initializable {
             double paneMidpointY = canvasPane.getHeight()/2;
             canvas.setLayoutX(paneMidpointX - width/2);
             canvas.setLayoutY(paneMidpointY - height/2);
+            resetManipulation();
             
             //  Clear canvas
             GraphicsContext context = canvas.getGraphicsContext2D();
             context.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
-            brushTool.setFill(canvasColorpicker.getValue());
-            brushTool.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 1, 1);
+            gc.setFill(canvasColorpicker.getValue());
+            gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 1, 1);
 
             //  Enable ability to export
             exportButton.setDisable(false);
@@ -303,7 +304,7 @@ public class MainController extends App implements Initializable {
     //         try {
     //             InputStream io = new FileInputStream(file);
     //             Image img = new Image(io);
-    //             brushTool.drawImage(img, 0, 0);
+    //             gc.drawImage(img, 0, 0);
     //             System.out.println("Successfully opened file");
     //         } catch (IOException ex) {
     //             System.out.println("Error opening file");
@@ -363,35 +364,29 @@ public class MainController extends App implements Initializable {
     }
 
     @FXML
-    private void resetManipulation(ActionEvent e) {
-        resetCanvasLocation();
+    private void resetSelected(ActionEvent e) {
+        resetManipulation();
+    }
+
+    private void resetManipulation() {
+        double paneX = defaultPaneLocation.getLayoutX();
+        double paneY = defaultPaneLocation.getLayoutY();
+        canvasPane.setLayoutX(paneX);
+        canvasPane.setLayoutY(paneY);
         rotateCanvas(0);
         rotateSlider.setValue(0);
         rotateText.setText("0\u00B0");
     }
 
-    private void resetCanvasLocation() {
-        double paneX = defaultPaneLocation.getLayoutX();
-        double paneY = defaultPaneLocation.getLayoutY();
-        canvasPane.setLayoutX(paneX);
-        canvasPane.setLayoutY(paneY);
-    }
-
     private void rotateCanvas(int actualAngle) {
-        resetCanvasLocation();
+        //resetCanvasLocation();
 
         int angleDifference = actualAngle - rotatedAngle;
         double px = canvas.getWidth()/2;
         double py = canvas.getHeight()/2;
 
         Rotate r = new Rotate(angleDifference, px, py);
-        //brushTool.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
         canvas.getTransforms().add(r);
         rotatedAngle = actualAngle;
-    }
-
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
     }
 }

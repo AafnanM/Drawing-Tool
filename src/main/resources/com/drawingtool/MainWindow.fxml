@@ -52,7 +52,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Text>
-            <Button mnemonicParsing="false" onAction="#resetManipulation" text="Reset" />
+            <Button mnemonicParsing="false" onAction="#resetSelected" text="Reset" />
             <Button fx:id="hand" mnemonicParsing="false" onAction="#handSelected" text="Hand" />
             <HBox alignment="CENTER_LEFT" prefHeight="29.0" prefWidth="180.0">
                <children>
