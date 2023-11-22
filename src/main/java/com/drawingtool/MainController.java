@@ -1,21 +1,33 @@
 package com.drawingtool;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ResourceBundle;
+import java.awt.Image;
+import java.awt.image.RenderedImage;
+import javax.imageio.ImageIO;
+
 import java.net.URL;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.Cursor;
@@ -36,6 +48,8 @@ public class MainController extends App implements Initializable {
     private AnchorPane canvasPane;
     @FXML
     private Rectangle canvasBG;
+    @FXML
+    private Button exportButton;
     
     // New canvas
     @FXML
@@ -220,7 +234,10 @@ public class MainController extends App implements Initializable {
             brushTool.setFill(canvasColorpicker.getValue());
             brushTool.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 1, 1);
 
-            System.out.println("Canvas size: " + canvas.getWidth() + " x " + canvas.getHeight());
+            //  Enable ability to export
+            exportButton.setDisable(false);
+
+            System.out.println("New canvas size: " + canvas.getWidth() + " x " + canvas.getHeight());
         }
         else
             canvasErrorMsg.setVisible(true);
@@ -243,6 +260,51 @@ public class MainController extends App implements Initializable {
         if (Integer.parseInt(strNum) <= 0)
             return false;
         return true;
+    }
+
+    //  OPEN FILE
+    // @FXML 
+    // private void openFile(ActionEvent e) {
+    //     FileChooser openFile = new FileChooser();
+    //     openFile.setTitle("Open File");
+
+    //     Stage stage = (Stage) canvas.getScene().getWindow();
+
+    //     File file = openFile.showOpenDialog(stage);
+    //     if (file != null) {
+    //         try {
+    //             InputStream io = new FileInputStream(file);
+    //             Image img = new Image(io);
+    //             brushTool.drawImage(img, 0, 0);
+    //             System.out.println("Successfully opened file");
+    //         } catch (IOException ex) {
+    //             System.out.println("Error opening file");
+    //         }
+    //     }
+    // }
+
+    //  EXPORT CANVAS
+    @FXML
+    private void exportCanvas(ActionEvent e) {
+        FileChooser savefile = new FileChooser();
+        savefile.setTitle("Save File");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files", "*.PNG");
+        savefile.getExtensionFilters().add(extFilter);
+
+        Stage stage = (Stage) canvas.getScene().getWindow();
+
+        File file = savefile.showSaveDialog(stage);
+        if (file != null) {
+            try {
+                WritableImage writableImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
+                canvas.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(renderedImage, "png", file);
+                System.out.println("Successfully saved image");
+            } catch (IOException ex) {
+                System.out.println("Error saving image");
+            }
+        }
     }
 
     //  TOOLBAR METHODS

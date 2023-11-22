@@ -27,8 +27,13 @@
                <children>
                   <Button fx:id="btn_newcanvas" mnemonicParsing="false" onAction="#newCanvas" text="New Canvas">
                      <HBox.margin>
-                        <Insets left="3.5" top="3.5" />
+                        <Insets left="3.5" right="3.5" top="3.5" />
                      </HBox.margin></Button>
+                  <Button fx:id="exportButton" disable="true" mnemonicParsing="false" onAction="#exportCanvas" text="Export">
+                     <HBox.margin>
+                        <Insets top="3.5" />
+                     </HBox.margin>
+                  </Button>
                </children>
                <VBox.margin>
                   <Insets />
