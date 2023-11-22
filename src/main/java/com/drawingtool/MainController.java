@@ -145,8 +145,6 @@ public class MainController extends App implements Initializable {
             if (isValid(canvasWidth.getText())) {
                 if (Integer.parseInt(canvasWidth.getText()) > 1440)
                     canvasWidth.setText("1440");
-                else if (Integer.parseInt(canvasWidth.getText()) < 1)
-                    canvasWidth.setText("1");
             }
             else
                 canvasWidth.setText("1");
@@ -155,8 +153,6 @@ public class MainController extends App implements Initializable {
             if (isValid(canvasHeight.getText())) {
                 if (Integer.parseInt(canvasHeight.getText()) > 1440)
                     canvasHeight.setText("1440");
-                else if (Integer.parseInt(canvasHeight.getText()) < 1)
-                    canvasHeight.setText("1");
             }
             else
                 canvasHeight.setText("1");

@@ -110,6 +110,7 @@
                      </children>
                   </VBox>
                   <Button layoutX="668.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancelNewCanvas" prefHeight="38.0" prefWidth="67.0" text="Cancel" />
+                  <Text fill="WHITE" layoutX="10.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Canvas" />
                </children>
             </AnchorPane>
          </children>
