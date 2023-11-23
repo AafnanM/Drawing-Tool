@@ -20,6 +20,8 @@ public class App extends Application {
         scene = new Scene(loadFXML("MainWindow"), 1280, 720);
         stage.setScene(scene);
         stage.setTitle("Drawing Tool");
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         stage.show();
     }
 

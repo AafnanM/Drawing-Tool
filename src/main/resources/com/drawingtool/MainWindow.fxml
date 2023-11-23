@@ -7,10 +7,15 @@
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@WindowStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.drawingtool.MainController">
@@ -26,14 +31,34 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox">
                <children>
-                  <Button fx:id="btn_newcanvas" mnemonicParsing="false" onAction="#newCanvas" text="New Canvas">
+                  <Button fx:id="btn_newcanvas" mnemonicParsing="false" onAction="#newCanvas" text="  New Canvas">
                      <HBox.margin>
                         <Insets left="3.5" right="3.5" top="3.5" />
-                     </HBox.margin></Button>
-                  <Button fx:id="exportButton" disable="true" mnemonicParsing="false" onAction="#exportCanvas" text="Export">
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Create new canvas" />
+                     </tooltip>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@plus.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button fx:id="exportButton" disable="true" mnemonicParsing="false" onAction="#exportCanvas" text="  Export">
                      <HBox.margin>
                         <Insets top="3.5" />
                      </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Export canvas to png file" />
+                     </tooltip>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@export.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
                </children>
                <VBox.margin>
@@ -45,67 +70,230 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor>
       </VBox>
-      <VBox layoutX="1080.0" layoutY="40.0" prefHeight="680.0" prefWidth="200.0" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+      <VBox fx:id="toolbar" disable="true" layoutX="1080.0" layoutY="40.0" prefHeight="680.0" prefWidth="200.0" scaleShape="false" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Image Manipulation">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Image manipulation          " underline="true">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="15.5" />
+               </font>
             </Text>
-            <Button mnemonicParsing="false" onAction="#resetSelected" text="Reset" />
-            <Button fx:id="hand" mnemonicParsing="false" onAction="#handSelected" text="Hand" />
+            <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#resetSelected" prefHeight="35.0" prefWidth="193.0" styleClass="toggle-button" text="  Reset">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Reset.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="2.0" />
+               </VBox.margin>
+               <tooltip>
+                  <Tooltip text="Reset location &amp; orientation" />
+               </tooltip></Button>
+            <ToggleButton fx:id="hand" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#handSelected" prefHeight="31.0" prefWidth="193.0" text="  Hand">
+               <graphic>
+                  <ImageView fitHeight="22.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Hand.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="2.0" top="2.0" />
+               </VBox.margin>
+               <tooltip>
+                  <Tooltip text="Move canvas" />
+               </tooltip></ToggleButton>
+            <HBox prefHeight="30.0" prefWidth="180.0">
+               <children>
+                  <ToggleButton fx:id="flipX" mnemonicParsing="false" onAction="#flipCanvasHorizontal" prefWidth="96.0">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@flip_horizontal.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Flip horizontally" />
+                     </tooltip></ToggleButton>
+                  <ToggleButton fx:id="flipY" mnemonicParsing="false" onAction="#flipCanvasVertical" prefWidth="96.0">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@flip_vertical.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Flip vertically" />
+                     </tooltip></ToggleButton>
+               </children>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="29.0" prefWidth="180.0">
                <children>
-                  <Slider fx:id="rotateSlider" blockIncrement="5.0" majorTickUnit="180.0" max="180.0" min="-180.0" prefHeight="18.0" prefWidth="148.0" showTickMarks="true" snapToTicks="true" />
-                  <Text fx:id="rotateText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0°">
+                  <Slider fx:id="rotateSlider" blockIncrement="5.0" majorTickUnit="180.0" max="180.0" min="-180.0" minorTickCount="5" prefHeight="18.0" prefWidth="183.0" showTickMarks="true" snapToTicks="true">
+                     <HBox.margin>
+                        <Insets bottom="-4.0" />
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Drag to rotate canvas" />
+                     </tooltip></Slider>
+                  <Text fx:id="rotateText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0°" textAlignment="CENTER" wrappingWidth="37.740234375">
                      <HBox.margin>
                         <Insets left="3.0" />
                      </HBox.margin>
                   </Text>
                </children>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="7.0" />
                </VBox.margin>
             </HBox>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Tools">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brushes                               " underline="true">
                <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
+                  <Insets bottom="10.0" top="15.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="15.5" />
+               </font>
+            </Text>
+            <ToggleButton fx:id="brush" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#brushSelected" prefHeight="31.0" prefWidth="193.0" text="  Brush">
+               <VBox.margin>
+                  <Insets bottom="2.0" />
+               </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@brush.png" />
+                     </image></ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Paint on canvas" />
+               </tooltip></ToggleButton>
+            <ToggleButton fx:id="eraser" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#eraserSelected" prefHeight="31.0" prefWidth="193.0" text="  Eraser">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@eraser.png" />
+                     </image></ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Erase on canvas" />
+               </tooltip></ToggleButton>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brush settings                    " underline="true">
+               <font>
+                  <Font name="System Bold" size="15.5" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="12.0" top="15.0" />
                </VBox.margin>
             </Text>
-            <Button fx:id="brush" mnemonicParsing="false" onAction="#brushSelected" text="Brush">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#eraserSelected" text="Eraser" />
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brush settings">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </Text>
-            <Slider fx:id="bsizeSlider" min="1.0" showTickMarks="true" value="25.0">
-               <VBox.margin>
-                  <Insets bottom="5.0" top="10.0" />
-               </VBox.margin>
-            </Slider>
-            <TextField fx:id="bsize" promptText="Type brush size" text="25" />
-            <HBox prefHeight="24.0" prefWidth="180.0">
+            <HBox prefHeight="30.0" prefWidth="200.0">
                <children>
-                  <ColorPicker fx:id="colorpickerPrimary" prefHeight="43.0" prefWidth="75.0" styleClass="colorpicker">
+                  <Slider fx:id="bsizeSlider" min="1.0" minorTickCount="4" showTickMarks="true" value="25.0">
                      <HBox.margin>
-                        <Insets />
+                        <Insets top="4.0" />
                      </HBox.margin>
-                  </ColorPicker>
-                  <ColorPicker fx:id="colorpickerSecondary" prefHeight="74.0" prefWidth="75.0" styleClass="colorpicker">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </ColorPicker>
-                  <Button mnemonicParsing="false" onAction="#switchColor" prefHeight="36.0" prefWidth="30.0" text="↹" />
+                     <tooltip>
+                        <Tooltip text="Drag to adjust brush size" />
+                     </tooltip></Slider>
+                  <TextField fx:id="bsize" alignment="CENTER" prefHeight="31.0" prefWidth="42.0" promptText="Type brush size" text="25">
+                     <tooltip>
+                        <Tooltip text="Enter brush size" />
+                     </tooltip></TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <ToggleButton fx:id="roundBrush" mnemonicParsing="false" onAction="#roundBrushSelected" prefWidth="64.333" selected="true">
+                     <tooltip>
+                        <Tooltip text="Round brush" />
+                     </tooltip>
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@circleBrush.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></ToggleButton>
+                  <ToggleButton fx:id="squareBrush" mnemonicParsing="false" onAction="#squareBrushSelected" prefWidth="64.333">
+                     <tooltip>
+                        <Tooltip text="Square brush" />
+                     </tooltip>
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@squareBrush.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></ToggleButton>
+                  <ToggleButton fx:id="rectBrush" mnemonicParsing="false" onAction="#RectBrushSelected" prefWidth="64.333">
+                     <tooltip>
+                        <Tooltip text="Rectangular brush" />
+                     </tooltip>
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@rectBrush.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></ToggleButton>
                </children>
                <VBox.margin>
-                  <Insets top="25.0" />
+                  <Insets top="13.0" />
                </VBox.margin>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="180.0">
+               <children>
+                  <ColorPicker fx:id="colorpickerPrimary" prefHeight="43.0" prefWidth="100.0" styleClass="colorpicker">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Select primary color" />
+                     </tooltip>
+                  </ColorPicker>
+                  <ColorPicker fx:id="colorpickerSecondary" prefHeight="74.0" prefWidth="100.0" styleClass="colorpicker">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip text="Select secondary color" />
+                     </tooltip>
+                  </ColorPicker>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="2.0" top="17.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="36.0" prefWidth="190.0">
+               <children>
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#switchColor" prefHeight="35.0" prefWidth="222.0" styleClass="toggle-button" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@curved_arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Swap primary and secondary colors" />
+                     </tooltip>
+                  </Button>
+               </children>
             </HBox>
          </children>
          <cursor>
@@ -121,7 +309,7 @@
                <children>
                   <TextField fx:id="canvasWidth" layoutX="190.0" layoutY="144.0" prefHeight="31.0" prefWidth="124.0" text="500" />
                   <TextField fx:id="canvasHeight" layoutX="190.0" layoutY="194.0" prefHeight="31.0" prefWidth="124.0" text="500" />
-                  <ColorPicker fx:id="canvasColorpicker" layoutX="190.0" layoutY="244.0" prefHeight="31.0" prefWidth="124.0" />
+                  <ColorPicker fx:id="canvasColorpicker" layoutX="190.0" layoutY="244.0" prefHeight="31.0" prefWidth="124.0" styleClass="colorpicker" />
                   <Text fill="WHITE" layoutX="123.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Width:" />
                   <Text fill="WHITE" layoutX="121.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Height:" />
                   <Text fill="WHITE" layoutX="90.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paper color:" />
@@ -146,5 +334,10 @@
             </AnchorPane>
          </children>
       </AnchorPane>
+      <Button fx:id="hideButton" layoutX="1229.0" layoutY="689.0" mnemonicParsing="false" onAction="#hideToolbar" prefHeight="36.0" prefWidth="55.0" text="Hide" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <tooltip>
+            <Tooltip text="Show/hide toolbar" />
+         </tooltip>
+      </Button>
    </children>
 </AnchorPane>

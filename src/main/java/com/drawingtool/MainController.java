@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -59,6 +60,26 @@ public class MainController extends App implements Initializable {
     private Slider rotateSlider;
     @FXML
     private Text rotateText;
+    @FXML
+    private ToggleButton hand;
+    @FXML
+    private ToggleButton brush;
+    @FXML
+    private ToggleButton eraser;
+    @FXML
+    private ToggleButton flipX;
+    @FXML
+    private ToggleButton flipY;
+    @FXML 
+    private VBox toolbar;
+    @FXML
+    private ToggleButton roundBrush;
+    @FXML
+    private ToggleButton squareBrush;
+    @FXML
+    private ToggleButton rectBrush;
+    @FXML
+    private Button hideButton;
     
     // New canvas
     @FXML
@@ -83,6 +104,10 @@ public class MainController extends App implements Initializable {
     private double mouseAnchorX;
     private double mouseAnchorY;
     private int rotatedAngle = 0;
+    private boolean flippedHorizontal = false;
+    private boolean flippedVertical = false;
+    private boolean firstOpen = true;
+    private boolean toolbarHidden = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -191,6 +216,8 @@ public class MainController extends App implements Initializable {
                 gc.fillRoundRect(x, y, size, size, size, size);
             else if (selectedBrush == 2)
                 gc.fillRoundRect(x, y, size, size, 1, 1);
+            else if (selectedBrush == 3)
+                gc.fillRoundRect(x, y, size, size/1.75, 1, 1);
         }
     }
 
@@ -203,6 +230,9 @@ public class MainController extends App implements Initializable {
         newCanvasPane.setDisable(false);
         scene.setCursor(Cursor.DEFAULT);
         selectedTool = "";
+        hand.setSelected(false);
+        brush.setSelected(false);
+        eraser.setSelected(false);
     }
 
     private void changeDim() {
@@ -263,8 +293,13 @@ public class MainController extends App implements Initializable {
             gc.setFill(canvasColorpicker.getValue());
             gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 1, 1);
 
-            //  Enable ability to export
+            //  Other actions
             exportButton.setDisable(false);
+            toolbar.setDisable(false);
+            if (firstOpen) {
+                firstOpen = false;
+                colorpickerPrimary.setValue(Color.BLACK);
+            }
 
             System.out.println("New canvas size: " + canvas.getWidth() + " x " + canvas.getHeight());
         }
@@ -274,8 +309,10 @@ public class MainController extends App implements Initializable {
 
     @FXML
     private void cancelNewCanvas(ActionEvent e) {
-        canvasPane.setVisible(true);
-        canvasPane.setDisable(false);
+        if (!firstOpen) {
+            canvasPane.setVisible(true);
+            canvasPane.setDisable(false);
+        }
         newCanvasPane.setVisible(false);
         newCanvasPane.setDisable(true);
     }
@@ -315,6 +352,7 @@ public class MainController extends App implements Initializable {
     //  EXPORT CANVAS
     @FXML
     private void exportCanvas(ActionEvent e) {
+        resetManipulation();
         FileChooser savefile = new FileChooser();
         savefile.setTitle("Save File");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files", "*.PNG");
@@ -339,21 +377,50 @@ public class MainController extends App implements Initializable {
     //  TOOLBAR METHODS
     @FXML
     private void brushSelected(ActionEvent e) {
+        hand.setSelected(false);
+        brush.setSelected(true);
+        eraser.setSelected(false);
         selectedTool = "brush";
         scene.setCursor(Cursor.CROSSHAIR);
     }
     @FXML
     private void eraserSelected(ActionEvent e) {
+        hand.setSelected(false);
+        brush.setSelected(false);
+        eraser.setSelected(true);
         selectedTool = "eraser";
-        //Image customimage = ...;
-        //Cursor eraserCursor = Toolkit.getDefaultToolkit().createCustomCursor(customImage, new Point(0, 0), "customCursor");
         scene.setCursor(Cursor.CROSSHAIR);
     }
-
     @FXML
     private void handSelected(ActionEvent e) {
+        hand.setSelected(true);
+        brush.setSelected(false);
+        eraser.setSelected(false);
         selectedTool = "hand";
         scene.setCursor(Cursor.OPEN_HAND);
+    }
+
+    //  BRUSH TYPES
+    @FXML
+    private void roundBrushSelected(ActionEvent e) {
+        selectedBrush = 1;
+        roundBrush.setSelected(true);
+        squareBrush.setSelected(false);
+        rectBrush.setSelected(false);
+    }
+    @FXML
+    private void squareBrushSelected(ActionEvent e) {
+        selectedBrush = 2;
+        roundBrush.setSelected(false);
+        squareBrush.setSelected(true);
+        rectBrush.setSelected(false);
+    }
+    @FXML
+    private void RectBrushSelected(ActionEvent e) {
+        selectedBrush = 3;
+        roundBrush.setSelected(false);
+        squareBrush.setSelected(false);
+        rectBrush.setSelected(true);
     }
 
     @FXML
@@ -369,18 +436,31 @@ public class MainController extends App implements Initializable {
     }
 
     private void resetManipulation() {
+        //  Reset Location
         double paneX = defaultPaneLocation.getLayoutX();
         double paneY = defaultPaneLocation.getLayoutY();
         canvasPane.setLayoutX(paneX);
         canvasPane.setLayoutY(paneY);
+
+        //  Reset rotation
         rotateCanvas(0);
         rotateSlider.setValue(0);
         rotateText.setText("0\u00B0");
+
+        //  Reset flip
+        if (flippedHorizontal || flippedVertical) {
+            canvas.getGraphicsContext2D().save();
+            canvas.setScaleX(1);
+            canvas.setScaleY(1);
+            canvas.getGraphicsContext2D().restore();
+            flippedHorizontal = false;;
+            flippedVertical = false;
+            flipX.setSelected(false);
+            flipY.setSelected(false);
+        }
     }
 
     private void rotateCanvas(int actualAngle) {
-        //resetCanvasLocation();
-
         int angleDifference = actualAngle - rotatedAngle;
         double px = canvas.getWidth()/2;
         double py = canvas.getHeight()/2;
@@ -388,5 +468,44 @@ public class MainController extends App implements Initializable {
         Rotate r = new Rotate(angleDifference, px, py);
         canvas.getTransforms().add(r);
         rotatedAngle = actualAngle;
+    }
+
+    @FXML
+    private void flipCanvasHorizontal(ActionEvent e) {
+        canvas.getGraphicsContext2D().save();
+        if (!flippedHorizontal)
+            canvas.setScaleX(-1);
+        else
+            canvas.setScaleX(1);
+        canvas.setScaleY(1);
+        canvas.getGraphicsContext2D().restore();
+        flippedHorizontal = !flippedHorizontal;
+    }
+    @FXML
+    private void flipCanvasVertical(ActionEvent e) {
+        canvas.getGraphicsContext2D().save();
+        if (!flippedVertical)
+            canvas.setScaleY(-1);
+        else
+            canvas.setScaleY(1);
+        canvas.setScaleX(1);
+        canvas.getGraphicsContext2D().restore();
+        flippedVertical = !flippedVertical;
+    }
+
+    @FXML
+    private void hideToolbar(ActionEvent e) {
+        if (!toolbarHidden) {
+            toolbar.setVisible(false);
+            toolbar.setDisable(true);
+            hideButton.setText("Show");
+        }
+        else {
+            toolbar.setVisible(true);
+            if (!firstOpen)
+                toolbar.setDisable(false);
+            hideButton.setText("Hide");
+        }
+        toolbarHidden = !toolbarHidden;
     }
 }

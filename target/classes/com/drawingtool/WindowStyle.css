@@ -15,5 +15,46 @@
 }
 
 .colorpicker {
+    -fx-color-label-visible: false;
+    -fx-background-color:#424242;
+}
+.colorpicker:hover {
+    -fx-background-color:#576074;
+}
+.colorpicker:pressed {
+    -fx-background-color:#606A80;
+}
+
+.text-field {
+    -fx-background-color:#424242;
+    -fx-text-fill:white;
+}
+.text-field:hover {
+    -fx-background-color:#4C4C4C;
+}
+
+.button {
+    -fx-background-color:#4C4C4C;
+    -fx-text-fill:white;
+}
+.button:hover {
+    -fx-background-color:#576074;
+}
+.button:pressed {
+    -fx-background-color:#606A80;
+}
+
+.toggle-button {
+    -fx-text-fill: white;
+    -fx-background-color:#333333;
     -fx-color-label-visible: false
+}
+.toggle-button:hover {
+    -fx-background-color:#576074;
+}
+.toggle-button:selected {
+    -fx-background-color:#606A80;
+}
+.toggle-button:pressed {
+    -fx-background-color:#606A80;
 }
