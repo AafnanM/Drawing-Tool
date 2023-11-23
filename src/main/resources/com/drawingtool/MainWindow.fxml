@@ -127,7 +127,7 @@
                <children>
                   <ToggleButton fx:id="flipX" mnemonicParsing="false" onAction="#flipCanvasHorizontal" prefWidth="96.0">
                      <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@flip_horizontal.png" />
                            </image>
@@ -141,7 +141,7 @@
                      </tooltip></ToggleButton>
                   <ToggleButton fx:id="flipY" mnemonicParsing="false" onAction="#flipCanvasVertical" prefWidth="96.0">
                      <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@flip_vertical.png" />
                            </image>
@@ -174,7 +174,7 @@
                   <Insets top="7.0" />
                </VBox.margin>
             </HBox>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brushes                               " underline="true">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Tools                                  " underline="true">
                <VBox.margin>
                   <Insets bottom="10.0" top="15.0" />
                </VBox.margin>
@@ -208,13 +208,19 @@
                <tooltip>
                   <Tooltip text="Erase on canvas" />
                </tooltip></ToggleButton>
-            <ToggleButton fx:id="eyedropper" mnemonicParsing="false" onAction="#eyedropperSelected" text="  Eyedropper">
+            <ToggleButton fx:id="eyedropper" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#eyedropperSelected" prefHeight="32.0" prefWidth="198.0" text="  Eyedropper">
                <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@eyedropper.png" />
+                     </image></ImageView>
                </graphic>
                <tooltip>
                   <Tooltip text="Sample color" />
                </tooltip>
+               <VBox.margin>
+                  <Insets bottom="2.0" top="2.0" />
+               </VBox.margin>
             </ToggleButton>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brush settings                    " underline="true">
                <font>
