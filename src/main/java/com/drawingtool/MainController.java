@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ResourceBundle;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import javax.imageio.ImageIO;
 
@@ -187,16 +189,16 @@ public class MainController extends App implements Initializable {
         });
         canvasWidth.textProperty().addListener((observable) -> {
             if (isValid(canvasWidth.getText())) {
-                if (Integer.parseInt(canvasWidth.getText()) > 1440)
-                    canvasWidth.setText("1440");
+                if (Integer.parseInt(canvasWidth.getText()) > 2160)
+                    canvasWidth.setText("2160");
             }
             else
                 canvasWidth.setText("1");
         });
         canvasHeight.textProperty().addListener((observable) -> {
             if (isValid(canvasHeight.getText())) {
-                if (Integer.parseInt(canvasHeight.getText()) > 1440)
-                    canvasHeight.setText("1440");
+                if (Integer.parseInt(canvasHeight.getText()) > 2160)
+                    canvasHeight.setText("2160");
             }
             else
                 canvasHeight.setText("1");
@@ -329,25 +331,52 @@ public class MainController extends App implements Initializable {
     }
 
     //  OPEN FILE
-    // @FXML 
-    // private void openFile(ActionEvent e) {
-    //     FileChooser openFile = new FileChooser();
-    //     openFile.setTitle("Open File");
+    @FXML 
+    private void openFile(ActionEvent e) {
+        FileChooser openFile = new FileChooser();
+        openFile.setTitle("Open File");
 
-    //     Stage stage = (Stage) canvas.getScene().getWindow();
+        Stage stage = (Stage) canvas.getScene().getWindow();
 
-    //     File file = openFile.showOpenDialog(stage);
-    //     if (file != null) {
-    //         try {
-    //             InputStream io = new FileInputStream(file);
-    //             Image img = new Image(io);
-    //             gc.drawImage(img, 0, 0);
-    //             System.out.println("Successfully opened file");
-    //         } catch (IOException ex) {
-    //             System.out.println("Error opening file");
-    //         }
-    //     }
-    // }
+        File file = openFile.showOpenDialog(stage);
+        if (file != null) {
+            try {
+                InputStream io = new FileInputStream(file);
+                BufferedImage buffImg = ImageIO.read(io);
+                WritableImage image = SwingFXUtils.toFXImage(buffImg, null);
+
+                canvasPane.setVisible(true);
+                canvasPane.setDisable(false);
+
+                //  Set canvas dimensions
+                double width = image.getWidth();
+                double height = image.getHeight();
+                canvas.setWidth(width);
+                canvas.setHeight(height);
+                canvasBG.setVisible(false);
+
+                double paneMidpointX = canvasPane.getWidth()/2;
+                double paneMidpointY = canvasPane.getHeight()/2;
+                canvas.setLayoutX(paneMidpointX - width/2);
+                canvas.setLayoutY(paneMidpointY - height/2);
+
+                exportButton.setDisable(false);
+                toolbar.setDisable(false);
+                if (firstOpen) {
+                    firstOpen = false;
+                    colorpickerPrimary.setValue(Color.BLACK);
+                }
+
+                //  Draw image onto canvas
+                gc.drawImage(image, 0.0, 0.0);
+                resetManipulation();
+                System.out.println("Successfully opened file");
+
+            } catch (IOException ex) {
+                System.out.println("Error opening file");
+            }
+        }
+    }
 
     //  EXPORT CANVAS
     @FXML
@@ -436,18 +465,18 @@ public class MainController extends App implements Initializable {
     }
 
     private void resetManipulation() {
-        //  Reset Location
+        //  Reset location of canvas to the default
         double paneX = defaultPaneLocation.getLayoutX();
         double paneY = defaultPaneLocation.getLayoutY();
         canvasPane.setLayoutX(paneX);
         canvasPane.setLayoutY(paneY);
 
-        //  Reset rotation
+        //  Reset rotation to 0
         rotateCanvas(0);
         rotateSlider.setValue(0);
         rotateText.setText("0\u00B0");
 
-        //  Reset flip
+        //  Reset flip toggles
         if (flippedHorizontal || flippedVertical) {
             canvas.getGraphicsContext2D().save();
             canvas.setScaleX(1);

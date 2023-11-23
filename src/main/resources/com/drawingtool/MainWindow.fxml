@@ -45,6 +45,21 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#openFile" text="  Open file">
+                     <HBox.margin>
+                        <Insets right="3.5" top="3.5" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@open_file.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Open existing file" />
+                     </tooltip>
+                  </Button>
                   <Button fx:id="exportButton" disable="true" mnemonicParsing="false" onAction="#exportCanvas" text="  Export">
                      <HBox.margin>
                         <Insets top="3.5" />
