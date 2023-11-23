@@ -7,11 +7,13 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ResourceBundle;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import javax.imageio.ImageIO;
+import javax.swing.Action;
 
 import java.net.URL;
 
@@ -30,6 +32,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.robot.Robot;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
@@ -68,6 +71,8 @@ public class MainController extends App implements Initializable {
     private ToggleButton brush;
     @FXML
     private ToggleButton eraser;
+    @FXML
+    private ToggleButton eyedropper;
     @FXML
     private ToggleButton flipX;
     @FXML
@@ -129,6 +134,16 @@ public class MainController extends App implements Initializable {
             double y = e.getY() - size/2;
 
             draw(gc, size, x, y);
+        });
+
+        //  Eyedropper tool
+        canvas.setOnMouseClicked(e -> {
+            if (selectedTool == "eyedropper") {
+                int x = MouseInfo.getPointerInfo().getLocation().x;
+                int y = MouseInfo.getPointerInfo().getLocation().y;
+                Robot robot = new Robot();
+                colorpickerPrimary.setValue(robot.getPixelColor(x, y));
+            }
         });
 
         //  Rotate canvas
@@ -409,6 +424,7 @@ public class MainController extends App implements Initializable {
         hand.setSelected(false);
         brush.setSelected(true);
         eraser.setSelected(false);
+        eyedropper.setSelected(false);
         selectedTool = "brush";
         scene.setCursor(Cursor.CROSSHAIR);
     }
@@ -417,7 +433,17 @@ public class MainController extends App implements Initializable {
         hand.setSelected(false);
         brush.setSelected(false);
         eraser.setSelected(true);
+        eyedropper.setSelected(false);
         selectedTool = "eraser";
+        scene.setCursor(Cursor.CROSSHAIR);
+    }
+    @FXML
+    private void eyedropperSelected(ActionEvent e) {
+        hand.setSelected(false);
+        brush.setSelected(false);
+        eraser.setSelected(false);
+        eyedropper.setSelected(true);
+        selectedTool = "eyedropper";
         scene.setCursor(Cursor.CROSSHAIR);
     }
     @FXML
@@ -425,6 +451,7 @@ public class MainController extends App implements Initializable {
         hand.setSelected(true);
         brush.setSelected(false);
         eraser.setSelected(false);
+        eyedropper.setSelected(false);
         selectedTool = "hand";
         scene.setCursor(Cursor.OPEN_HAND);
     }

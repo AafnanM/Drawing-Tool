@@ -197,7 +197,7 @@
                </tooltip></ToggleButton>
             <ToggleButton fx:id="eraser" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#eraserSelected" prefHeight="31.0" prefWidth="193.0" text="  Eraser">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets bottom="2.0" top="2.0" />
                </VBox.margin>
                <graphic>
                   <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
@@ -208,6 +208,14 @@
                <tooltip>
                   <Tooltip text="Erase on canvas" />
                </tooltip></ToggleButton>
+            <ToggleButton fx:id="eyedropper" mnemonicParsing="false" onAction="#eyedropperSelected" text="  Eyedropper">
+               <graphic>
+                  <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Sample color" />
+               </tooltip>
+            </ToggleButton>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Brush settings                    " underline="true">
                <font>
                   <Font name="System Bold" size="15.5" />
