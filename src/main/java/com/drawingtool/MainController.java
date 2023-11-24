@@ -19,6 +19,7 @@ import java.net.URL;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,6 +30,11 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.Mnemonic;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -43,6 +49,8 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 
 public class MainController extends App implements Initializable {
+    @FXML
+    private AnchorPane windowPane;
     @FXML
     private ColorPicker colorpickerPrimary;
     @FXML
@@ -88,7 +96,7 @@ public class MainController extends App implements Initializable {
     @FXML
     private Button hideButton;
     
-    // New canvas
+    // New canvas FXML objects
     @FXML
     private TextField canvasWidth;
     @FXML
@@ -104,8 +112,10 @@ public class MainController extends App implements Initializable {
     @FXML
     private AnchorPane newCanvasPane;
     
+    //  Graphics context
     GraphicsContext gc;
 
+    //  Standard variables
     private String selectedTool = "";
     private int selectedBrush = 1;
     private double mouseAnchorX;
@@ -118,6 +128,93 @@ public class MainController extends App implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //  KEYBOARD SHORTCUTS
+        windowPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                KeyCombination newCanvasKey = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
+                KeyCombination openFileKey = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
+                KeyCombination exportKey = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
+
+                if (newCanvasKey.match(event)) {
+                    System.out.println("New canvas");
+                    try {
+                        newCanvas();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (openFileKey.match(event)) {                    //  Open file
+                    openFile();
+                }
+                else if (exportKey.match(event)) {                      //  Export
+                    exportCanvas();
+                }
+                else if (event.getCode() == KeyCode.R) {                //  Reset
+                    resetManipulation();
+                }
+                else if (event.getCode() == KeyCode.H) {                //  Hand
+                    handSelected();
+                }
+                else if (event.getCode() == KeyCode.O) {                //  Flip horizontally
+                    flipCanvasHorizontal();
+                    if (flippedHorizontal) flipX.setSelected(true);
+                    else flipX.setSelected(false);
+                }
+                else if (event.getCode() == KeyCode.P) {                //  Flip vertically
+                    flipCanvasVertical();
+                    if (flippedVertical) flipY.setSelected(true);
+                    else flipY.setSelected(false);
+                }
+                else if (event.getCode() == KeyCode.L) {                //  Rotate right
+                    double val = rotateSlider.getValue() + 30;
+                    if (val > 180) val = 180;
+                    rotateSlider.setValue(val);
+                    rotateCanvas((int)val);
+                }
+                else if (event.getCode() == KeyCode.K) {                //  Rotate left
+                    double val = rotateSlider.getValue() - 30;
+                    if (val < -180) val = -180;
+                    rotateSlider.setValue(val);
+                    rotateCanvas((int)val);
+                }
+                else if (event.getCode() == KeyCode.B) {                //  Brush
+                    brushSelected();
+                }
+                else if (event.getCode() == KeyCode.E) {                //  Eraser
+                    eraserSelected();
+                }
+                else if (event.getCode() == KeyCode.I) {                //  Eyedropper
+                    eyedropperSelected();
+                }
+                else if (event.getCode() == KeyCode.CLOSE_BRACKET) {            //  Brush size up
+                    if (Integer.parseInt(bsize.getText()) == 1)
+                        bsize.setText(Integer.parseInt(bsize.getText()) + 4 + "");
+                    else
+                    bsize.setText(Integer.parseInt(bsize.getText()) + 5 + "");
+                }
+                else if (event.getCode() == KeyCode.OPEN_BRACKET) {             //  Brush size down
+                    bsize.setText(Integer.parseInt(bsize.getText()) - 5 + "");
+                }
+                else if (event.getCode() == KeyCode.DIGIT1) {           //  Round brush
+                    roundBrushSelected();
+                }
+                else if (event.getCode() == KeyCode.DIGIT2) {           //  Square brush
+                    squareBrushSelected();
+                }
+                else if (event.getCode() == KeyCode.DIGIT3) {           //  Rectangle brush
+                    rectBrushSelected();
+                }
+                else if (event.getCode() == KeyCode.X) {                //  Switch colors
+                    switchColor();
+                }
+                else if (event.getCode() == KeyCode.BACK_SPACE) {       //  Hide toolbar
+                    hideToolbar();
+                }
+            }
+        });
+
+        //  SET GRAPHICS CONTEXT TO CANVAS
         gc = canvas.getGraphicsContext2D();
 
         //  Brush tool
@@ -148,8 +245,6 @@ public class MainController extends App implements Initializable {
 
         //  Rotate canvas
         rotateSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            String text = Integer.toString(newValue.intValue()) + "\u00B0";
-            rotateText.setText(text);
             rotateCanvas(newValue.intValue());
         });
 
@@ -158,17 +253,7 @@ public class MainController extends App implements Initializable {
             bsize.setText(Integer.toString(newValue.intValue()));
         });
         bsize.textProperty().addListener((observable) -> {
-            if (isValid(bsize.getText())) {
-                if (Integer.parseInt(bsize.getText()) > 100)
-                    bsize.setText("100");
-                else if (Integer.parseInt(bsize.getText()) < 1)
-                    bsize.setText("1");
-                bsizeSlider.setValue((double)Double.parseDouble(bsize.getText()));
-            }
-            else {
-                bsize.setText("1");
-                bsizeSlider.setValue(1.0);
-            }
+            changeBsize();
         });
 
         //  Hand tool
@@ -192,7 +277,7 @@ public class MainController extends App implements Initializable {
             }
         });
 
-        //  Create new canvas
+        //  CREATE NEW CANVAS
         canvasWidth.textProperty().addListener((observable) -> {
             changeDim();
         });
@@ -241,6 +326,9 @@ public class MainController extends App implements Initializable {
     //  NEW CANVAS CODE
     @FXML
     public void newCanvas(ActionEvent e) throws IOException {
+        newCanvas();
+    }
+    private void newCanvas() throws IOException {
         canvasPane.setVisible(false);
         canvasPane.setDisable(true);
         newCanvasPane.setVisible(true);
@@ -348,6 +436,9 @@ public class MainController extends App implements Initializable {
     //  OPEN FILE
     @FXML 
     private void openFile(ActionEvent e) {
+        openFile();
+    }
+    private void openFile() {
         FileChooser openFile = new FileChooser();
         openFile.setTitle("Open File");
 
@@ -396,6 +487,9 @@ public class MainController extends App implements Initializable {
     //  EXPORT CANVAS
     @FXML
     private void exportCanvas(ActionEvent e) {
+        exportCanvas();
+    }
+    private void exportCanvas() {
         resetManipulation();
         FileChooser savefile = new FileChooser();
         savefile.setTitle("Save File");
@@ -421,6 +515,9 @@ public class MainController extends App implements Initializable {
     //  TOOLBAR METHODS
     @FXML
     private void brushSelected(ActionEvent e) {
+        brushSelected();
+    }
+    private void brushSelected() {
         hand.setSelected(false);
         brush.setSelected(true);
         eraser.setSelected(false);
@@ -430,6 +527,9 @@ public class MainController extends App implements Initializable {
     }
     @FXML
     private void eraserSelected(ActionEvent e) {
+        eraserSelected();
+    }
+    private void eraserSelected() {
         hand.setSelected(false);
         brush.setSelected(false);
         eraser.setSelected(true);
@@ -439,6 +539,9 @@ public class MainController extends App implements Initializable {
     }
     @FXML
     private void eyedropperSelected(ActionEvent e) {
+        eyedropperSelected();
+    }
+    private void eyedropperSelected() {
         hand.setSelected(false);
         brush.setSelected(false);
         eraser.setSelected(false);
@@ -448,6 +551,9 @@ public class MainController extends App implements Initializable {
     }
     @FXML
     private void handSelected(ActionEvent e) {
+        handSelected();
+    }
+    private void handSelected() {
         hand.setSelected(true);
         brush.setSelected(false);
         eraser.setSelected(false);
@@ -456,9 +562,26 @@ public class MainController extends App implements Initializable {
         scene.setCursor(Cursor.OPEN_HAND);
     }
 
-    //  BRUSH TYPES
+    //  BRUSH SETTINGS 
+    private void changeBsize() {
+        if (isValid(bsize.getText())) {
+                if (Integer.parseInt(bsize.getText()) > 100)
+                    bsize.setText("100");
+                else if (Integer.parseInt(bsize.getText()) < 1)
+                    bsize.setText("1");
+                bsizeSlider.setValue((double)Double.parseDouble(bsize.getText()));
+            }
+            else {
+                bsize.setText("1");
+                bsizeSlider.setValue(1.0);
+            }
+    }
+
     @FXML
     private void roundBrushSelected(ActionEvent e) {
+        roundBrushSelected();
+    }
+    private void roundBrushSelected() {
         selectedBrush = 1;
         roundBrush.setSelected(true);
         squareBrush.setSelected(false);
@@ -466,13 +589,19 @@ public class MainController extends App implements Initializable {
     }
     @FXML
     private void squareBrushSelected(ActionEvent e) {
+        squareBrushSelected();
+    }
+    private void squareBrushSelected() {
         selectedBrush = 2;
         roundBrush.setSelected(false);
         squareBrush.setSelected(true);
         rectBrush.setSelected(false);
     }
     @FXML
-    private void RectBrushSelected(ActionEvent e) {
+    private void rectBrushSelected(ActionEvent e) {
+        rectBrushSelected();
+    }
+    private void rectBrushSelected() {
         selectedBrush = 3;
         roundBrush.setSelected(false);
         squareBrush.setSelected(false);
@@ -481,6 +610,9 @@ public class MainController extends App implements Initializable {
 
     @FXML
     private void switchColor(ActionEvent e) {
+        switchColor();
+    }
+    private void switchColor() {
         Color temp = colorpickerPrimary.getValue();
         colorpickerPrimary.setValue(colorpickerSecondary.getValue());
         colorpickerSecondary.setValue(temp);
@@ -524,33 +656,43 @@ public class MainController extends App implements Initializable {
         Rotate r = new Rotate(angleDifference, px, py);
         canvas.getTransforms().add(r);
         rotatedAngle = actualAngle;
+
+        String text = Integer.toString(actualAngle) + "\u00B0";
+        rotateText.setText(text);
     }
 
     @FXML
     private void flipCanvasHorizontal(ActionEvent e) {
+        flipCanvasHorizontal();
+    }
+    private void flipCanvasHorizontal() {
         canvas.getGraphicsContext2D().save();
         if (!flippedHorizontal)
             canvas.setScaleX(-1);
         else
             canvas.setScaleX(1);
-        canvas.setScaleY(1);
         canvas.getGraphicsContext2D().restore();
         flippedHorizontal = !flippedHorizontal;
     }
     @FXML
     private void flipCanvasVertical(ActionEvent e) {
+        flipCanvasVertical();
+    }
+    private void flipCanvasVertical() {
         canvas.getGraphicsContext2D().save();
         if (!flippedVertical)
             canvas.setScaleY(-1);
         else
             canvas.setScaleY(1);
-        canvas.setScaleX(1);
         canvas.getGraphicsContext2D().restore();
         flippedVertical = !flippedVertical;
     }
 
     @FXML
     private void hideToolbar(ActionEvent e) {
+        hideToolbar();
+    }
+    private void hideToolbar() {
         if (!toolbarHidden) {
             toolbar.setVisible(false);
             toolbar.setDisable(true);
